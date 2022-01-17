@@ -1,16 +1,35 @@
-from direction import Direction
+from globalConstants import HEAD, Direction
 
 class Snake:
 
-    __length = None
-    __headPosition_X = None
-    __headPosition_Y = None
+    __length        = None
+    __color         = None
+    __snakeCoordX   = []
+    __snakeCoordY   = []
+    __direction     = None
 
-
-    def __init__(self, length, headPosition_X, headPosition_Y):
+    def __init__(self, length, headPositionX, headPositionY, color, direction):
         self.__length = length
-        self.__headPosition_X = headPosition_X
-        self.__headPosition_Y = headPosition_Y
+        self.__color = color
+        self.__snakeCoordX.append(headPositionX)
+        self.__snakeCoordY.append(headPositionY)
+        self.__direction = direction
+        self.initSnakeBody(direction, length)
+
+    def initSnakeBody(self, direction, length):
+        if length > 6:
+            print("snake initially too long")
+            exit()
+
+        # TODO implement other starting directions
+        if direction == Direction.EAST:
+            for i in range(1, length):
+                self.__snakeCoordY.append(self.__snakeCoordY[HEAD])
+                self.__snakeCoordX.append(self.__snakeCoordX[HEAD] - i)
+                
+        else:
+            print("snake must start in direction RIGHT")
+            exit()
 
     def getLength(self):
         return self.__length
@@ -18,26 +37,55 @@ class Snake:
     def setLength(self, length):
         self.__length = length
 
-    def getHeadPosition_X(self):
-        return self.__headPosition_X
+    def getColor(self):
+        return self.__color
     
-    def setHeadPosition_X(self, headPosition_X):
-        self.__headPosition_X = headPosition_X
+    def setColor(self, color):
+        self.color = color
 
-    def getHeadPosition_Y(self):
-        return self.__headPosition_Y
+    def getDirection(self):
+        return self.__direction
+
+    def setDirection(self, direction):
+        self.__direction = direction
+
+    def getSnakeCoordX(self, index):
+        return self.__snakeCoordX[index]
+
+    def getSnakeCoordY(self, index):
+        return self.__snakeCoordY[index]
+
+
+    # head of snake is moving in given direction
+    # rest of the snake is moving forward (replacing previous piece respectively)
+    # this is done using two tmp variables for x and y coordinates each
+    # one tmp is used to store current value of the piece and afterwards current value changes to previously created tmp
+    # tmp0 and tmp1 to hold correct order (alternating dependent on remainder of division by 2)
+    def moveInDirection(self, direction):
+        self.__direction = direction
+        tmpX_0 = self.__snakeCoordX[HEAD]
+        tmpY_0 = self.__snakeCoordY[HEAD]
+
+        if direction == Direction.EAST:
+            self.__snakeCoordX[HEAD] += 1
+        elif direction == Direction.WEST:
+            self.__snakeCoordX[HEAD] -= 1
+        elif direction == Direction.NORTH:
+            self.__snakeCoordY[HEAD] += 1
+        elif direction == Direction.SOUTH:
+            self.__snakeCoordY[HEAD] -= 1
+
+        for i in range(1, len(self.__snakeCoordX)):
+            if i % 2 == 1:
+                tmpX_1 = self.__snakeCoordX[i]
+                tmpY_1 = self.__snakeCoordY[i]
+                self.__snakeCoordX[i] = tmpX_0
+                self.__snakeCoordY[i] = tmpY_0
+
+            elif i % 2 == 0:
+                tmpX_0 = self.__snakeCoordX[i]
+                tmpY_0 = self.__snakeCoordY[i]
+                self.__snakeCoordX[i] = tmpX_1
+                self.__snakeCoordY[i] = tmpY_1
+
     
-    def setHeadPosition_Y(self, headPosition_Y):
-        self.__headPosition_Y = headPosition_Y
-
-
-# 0 for right, 1 for left, 2 for up, 3 for down
-    def moveHeadInDirection(self, direction):
-        if direction == Direction.RIGHT:
-            self.__headPosition_X += 1
-        elif direction == Direction.LEFT:
-            self.__headPosition_X -= 1
-        elif direction == Direction.UP:
-            self.__headPosition_Y += 1
-        elif direction == Direction.DOWN:
-            self.__headPosition_Y -= 1

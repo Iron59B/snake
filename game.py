@@ -1,13 +1,16 @@
 from snake import Snake
-from direction import Direction
+from globalConstants import Direction
+from field import Field
+import pygame
 
 
 def main():
-    snake = Snake(3, 3, 4)
-    print(snake.getHeadPosition_X())
+    snake = Snake(4, 6, 8, "green", Direction.EAST)
+    field = Field(15)
 
-    snake.moveHeadInDirection(Direction.RIGHT)
-    print(snake.getHeadPosition_X())
+    field.setSnakeFields(snake)
+
+    print(field.fields)
 
 
 if __name__ == "__main__":
