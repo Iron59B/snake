@@ -3,6 +3,9 @@ from snake import Snake
 from globalConstants import FieldType
 
 class Field:
+
+    snakeCoordsX = []
+    snakeCoordsY = []
     
     def __init__(self, squareSize):
         self.fields = np.zeros([squareSize, squareSize], dtype=int)
@@ -15,15 +18,27 @@ class Field:
             self.fields[0][x] = FieldType.BORDER
             self.fields[squareSize-1][x] = FieldType.BORDER
 
+        self.__squareSize = squareSize
 
-    def setSnakeFields(self, snake):
+    
+    def getSquareSize(self):
+        return self.__squareSize
+
+    def setSnakeFields(self, snake):     
+        self.removeSnakeFromField()
+
         for i in range(0, snake.getLength()):
             self.fields[snake.getSnakeCoordY(i)][snake.getSnakeCoordX(i)] = FieldType.SNAKE
+            self.snakeCoordsX.append(snake.getSnakeCoordX(i))
+            self.snakeCoordsY.append(snake.getSnakeCoordY(i))
 
-    def performSnakeMove(self, snake, nextContainsFood=False):
-        if nextContainsFood == True:
-            tmpX = snake.getSnakeCoordX(snake.getLength()-1)
-            tmpY = snake.getSnakeCoordY(snake.getLength()-1)
 
-        snake.moveInDirection()
+    def removeSnakeFromField(self):
+        snakeLength = len(self.snakeCoordsX)
+        for i in range(0, snakeLength):
+    
+            if self.fields[self.snakeCoordsY[i]][self.snakeCoordsX[i]] == FieldType.SNAKE:
+                self.fields[self.snakeCoordsY[i]][self.snakeCoordsX[i]] = FieldType.EMPTY
 
+        self.snakeCoordsX = []
+        self.snakeCoordsY = []

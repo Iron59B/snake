@@ -61,7 +61,7 @@ class Snake:
     # this is done using two tmp variables for x and y coordinates each
     # one tmp is used to store current value of the piece and afterwards current value changes to previously created tmp
     # tmp0 and tmp1 to hold correct order (alternating dependent on remainder of division by 2)
-    def moveInDirection(self, direction):
+    def moveInDirection(self, direction, eating=False):
         self.__direction = direction
         tmpX_0 = self.__snakeCoordX[HEAD]
         tmpY_0 = self.__snakeCoordY[HEAD]
@@ -71,9 +71,9 @@ class Snake:
         elif direction == Direction.WEST:
             self.__snakeCoordX[HEAD] -= 1
         elif direction == Direction.NORTH:
-            self.__snakeCoordY[HEAD] += 1
-        elif direction == Direction.SOUTH:
             self.__snakeCoordY[HEAD] -= 1
+        elif direction == Direction.SOUTH:
+            self.__snakeCoordY[HEAD] += 1
 
         for i in range(1, len(self.__snakeCoordX)):
             if i % 2 == 1:
@@ -82,10 +82,21 @@ class Snake:
                 self.__snakeCoordX[i] = tmpX_0
                 self.__snakeCoordY[i] = tmpY_0
 
+                if eating == True and i == len(self.__snakeCoordX) -1:
+                    self.__snakeCoordX.append(tmpX_1)
+                    self.__snakeCoordY.append(tmpY_1)
+                    self.__length += 1
+
             elif i % 2 == 0:
                 tmpX_0 = self.__snakeCoordX[i]
                 tmpY_0 = self.__snakeCoordY[i]
                 self.__snakeCoordX[i] = tmpX_1
                 self.__snakeCoordY[i] = tmpY_1
+
+                if eating == True and i == len(self.__snakeCoordX) -1:
+                    self.__snakeCoordX.append(tmpX_0)
+                    self.__snakeCoordY.append(tmpY_0)
+                    self.__length += 1
+            
 
     
