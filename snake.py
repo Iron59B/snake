@@ -63,7 +63,6 @@ class Snake:
     # tmp0 and tmp1 to hold correct order (alternating dependent on remainder of division by 2)
     def moveInDirection(self, direction, field):
         eating = False
-        self.__direction = direction
         tmpX_0 = self.__snakeCoordX[HEAD]
         tmpY_0 = self.__snakeCoordY[HEAD]
 
@@ -76,15 +75,15 @@ class Snake:
         elif direction == Direction.SOUTH:
             self.__snakeCoordY[HEAD] += 1
 
+        print(direction)
+
         # field only holds current part of snake after calling field.drawSnake()
         if field.getFields(self.__snakeCoordX[HEAD], self.__snakeCoordY[HEAD]) == FieldType.FOOD:
             eating = True
         elif field.getFields(self.__snakeCoordX[HEAD], self.__snakeCoordY[HEAD]) == FieldType.SNAKE:
-            print("snake bit her ass")
-            exit()
+            return 0
         elif field.getFields(self.__snakeCoordX[HEAD], self.__snakeCoordY[HEAD]) == FieldType.BORDER:
-            print("that was the border")
-            exit()
+            return 0
 
         for i in range(1, len(self.__snakeCoordX)):
             if i % 2 == 1:
@@ -108,6 +107,8 @@ class Snake:
                     self.__snakeCoordX.append(tmpX_0)
                     self.__snakeCoordY.append(tmpY_0)
                     self.__length += 1
+
+        return 1
             
 
     

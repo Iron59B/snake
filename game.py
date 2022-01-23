@@ -4,7 +4,6 @@ from globalConstants import BoardColor, Direction, FieldType
 from field import Field
 import pygame
 
-
 def main():
     global SCREEN, CLOCK
     screenSize = 900
@@ -18,7 +17,7 @@ def main():
     CLOCK = pygame.time.Clock()
 
     running = True
-    field.setSnakeFields(snake)
+    score = 0
     field.spawnFood()
 
     previousSnakeLength = snake.getLength()
@@ -32,22 +31,30 @@ def main():
                 running = False
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RIGHT and snake.getDirection() != Direction.WEST:
-                        snake.setDirection(Direction.EAST)
+                    snake.setDirection(Direction.EAST)
                 elif event.key == pygame.K_LEFT and snake.getDirection() != Direction.EAST:
-                        snake.setDirection(Direction.WEST)
+                    snake.setDirection(Direction.WEST)
                 elif event.key == pygame.K_UP and snake.getDirection() != Direction.SOUTH:
                     snake.setDirection(Direction.NORTH)
                 elif event.key == pygame.K_DOWN and snake.getDirection() != Direction.NORTH:
                     snake.setDirection(Direction.SOUTH)
         
-        snake.moveInDirection(snake.getDirection(), field)
+        success = snake.moveInDirection(snake.getDirection(), field)
         field.setSnakeFields(snake)
+
         if snake.getLength() > previousSnakeLength:
             previousSnakeLength = snake.getLength()
+            score += 1
             field.spawnFood()
 
         drawFields(screenSize, field)
         pygame.display.flip()
+
+        if success == 0:
+            running = False
+            f = open("score.txt", "a")
+            f.write(str(score) + "\n")
+            f.close()
 
     
 def drawFields(screenSize, field):
@@ -71,8 +78,6 @@ def drawFields(screenSize, field):
             fieldCountY += 1
 
         fieldCountX += 1
-
-
 
 
 if __name__ == "__main__":
