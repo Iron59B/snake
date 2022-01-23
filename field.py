@@ -1,44 +1,64 @@
+from random import random
 import numpy as np
 from snake import Snake
 from globalConstants import FieldType
+import random
 
 class Field:
 
-    snakeCoordsX = []
-    snakeCoordsY = []
+    __snakeCoordsX = []
+    __snakeCoordsY = []
+    # np array __fields
+    # __squareSize
     
     def __init__(self, squareSize):
-        self.fields = np.zeros([squareSize, squareSize], dtype=int)
+        self.__fields = np.zeros([squareSize, squareSize], dtype=int)
         
         for y in range(0, squareSize):
-            self.fields[y][0] = FieldType.BORDER
-            self.fields[y][squareSize-1] = FieldType.BORDER
+            self.__fields[y][0] = FieldType.BORDER
+            self.__fields[y][squareSize-1] = FieldType.BORDER
         
         for x in range(0, squareSize):
-            self.fields[0][x] = FieldType.BORDER
-            self.fields[squareSize-1][x] = FieldType.BORDER
-
+            self.__fields[0][x] = FieldType.BORDER
+            self.__fields[squareSize-1][x] = FieldType.BORDER
+        
         self.__squareSize = squareSize
 
     
     def getSquareSize(self):
         return self.__squareSize
 
+    def getFields(self, atX, atY):
+        return self.__fields[atY][atX]
+
     def setSnakeFields(self, snake):     
-        self.removeSnakeFromField()
+        self.__removeSnakeFromField()
 
         for i in range(0, snake.getLength()):
-            self.fields[snake.getSnakeCoordY(i)][snake.getSnakeCoordX(i)] = FieldType.SNAKE
-            self.snakeCoordsX.append(snake.getSnakeCoordX(i))
-            self.snakeCoordsY.append(snake.getSnakeCoordY(i))
+            self.__fields[snake.getSnakeCoordY(i)][snake.getSnakeCoordX(i)] = FieldType.SNAKE
+            self.__snakeCoordsX.append(snake.getSnakeCoordX(i))
+            self.__snakeCoordsY.append(snake.getSnakeCoordY(i))
 
 
-    def removeSnakeFromField(self):
-        snakeLength = len(self.snakeCoordsX)
+    def __removeSnakeFromField(self):
+        snakeLength = len(self.__snakeCoordsX)
         for i in range(0, snakeLength):
     
-            if self.fields[self.snakeCoordsY[i]][self.snakeCoordsX[i]] == FieldType.SNAKE:
-                self.fields[self.snakeCoordsY[i]][self.snakeCoordsX[i]] = FieldType.EMPTY
+            if self.__fields[self.__snakeCoordsY[i]][self.__snakeCoordsX[i]] == FieldType.SNAKE:
+                self.__fields[self.__snakeCoordsY[i]][self.__snakeCoordsX[i]] = FieldType.EMPTY
 
-        self.snakeCoordsX = []
-        self.snakeCoordsY = []
+        self.__snakeCoordsX = []
+        self.__snakeCoordsY = []
+
+    def spawnFood(self):
+    
+        x = random.randint(1, self.__squareSize-2)
+        y = random.randint(1, self.__squareSize-2)
+
+        while (self.__fields[y][x] == FieldType.SNAKE):
+            x = random.randint(1, self.__squareSize-2)
+            y = random.randint(1, self.__squareSize-2)
+
+        self.__fields[y][x] = FieldType.FOOD
+
+    

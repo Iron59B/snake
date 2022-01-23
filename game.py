@@ -7,10 +7,10 @@ import pygame
 
 def main():
     global SCREEN, CLOCK
-    screenSize = 510
+    screenSize = 900
 
     snake = Snake(4, 6, 8, "green", Direction.EAST)
-    field = Field(15)
+    field = Field(30)
 
     pygame.init()
 
@@ -19,39 +19,35 @@ def main():
 
     running = True
     field.setSnakeFields(snake)
-    keyPressed = "none"
+    field.spawnFood()
+
+    previousSnakeLength = snake.getLength()
 
     while running:
+        CLOCK.tick(10)
         
         for event in pygame.event.get():
+
             if event.type == pygame.QUIT:
                 running = False
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_RIGHT and snake.getDirection() != Direction.WEST:
+                        snake.setDirection(Direction.EAST)
+                elif event.key == pygame.K_LEFT and snake.getDirection() != Direction.EAST:
+                        snake.setDirection(Direction.WEST)
+                elif event.key == pygame.K_UP and snake.getDirection() != Direction.SOUTH:
+                    snake.setDirection(Direction.NORTH)
+                elif event.key == pygame.K_DOWN and snake.getDirection() != Direction.NORTH:
+                    snake.setDirection(Direction.SOUTH)
         
-        KEY_UP = pygame.key.get_pressed()[pygame.K_UP]
-        KEY_DOWN = pygame.key.get_pressed()[pygame.K_DOWN]
-        KEY_LEFT = pygame.key.get_pressed()[pygame.K_LEFT]
-        KEY_RIGHT = pygame.key.get_pressed()[pygame.K_RIGHT]
-    
-        if KEY_RIGHT:
-            keyPressed = "right"
-            snake.setDirection(Direction.EAST)
-        elif KEY_LEFT:
-            snake.setDirection(Direction.WEST)
-            keyPressed = "left"
-        elif KEY_UP:
-            snake.setDirection(Direction.NORTH)
-            keyPressed = "up"
-        elif KEY_DOWN:
-            keyPressed = "down"
-            snake.setDirection(Direction.SOUTH)
-
-        snake.moveInDirection(snake.getDirection())
-        print(snake.getDirection())
-        print(keyPressed)
+        snake.moveInDirection(snake.getDirection(), field)
         field.setSnakeFields(snake)
+        if snake.getLength() > previousSnakeLength:
+            previousSnakeLength = snake.getLength()
+            field.spawnFood()
+
         drawFields(screenSize, field)
         pygame.display.flip()
-        CLOCK.tick(2)
 
     
 def drawFields(screenSize, field):
@@ -62,61 +58,21 @@ def drawFields(screenSize, field):
     for x in range(0, screenSize, blockSize):
         fieldCountY = 0
         for y in range(0, screenSize, blockSize):
-            fieldType = field.fields[fieldCountY][fieldCountX]
+            fieldType = field.getFields(fieldCountX, fieldCountY)
             rect = pygame.Rect(x, y, blockSize, blockSize)
             if (fieldType == FieldType.BORDER):
                 pygame.draw.rect(SCREEN, BoardColor.BLACK, rect)
             elif (fieldType == FieldType.EMPTY):
-                pygame.draw.rect(SCREEN, BoardColor.WHITE, rect)
+                pygame.draw.rect(SCREEN, BoardColor.GRAY, rect)
             elif (fieldType == FieldType.SNAKE):
-                pygame.draw.rect(SCREEN, BoardColor.GREEN, rect)
+                pygame.draw.rect(SCREEN, BoardColor.DARKGREEN, rect)
+            elif (fieldType == FieldType.FOOD):
+                pygame.draw.rect(SCREEN, BoardColor.RED, rect,)
             fieldCountY += 1
 
         fieldCountX += 1
 
-    # print(field.fields)
-    # print()
 
-    # snake.moveInDirection(Direction.NORTH)
-
-    # field.setSnakeFields(snake)
-
-    # print(field.fields)
-    # print()
-
-    # i = 0
-    # while i < 3:
-    #     snake.moveInDirection(Direction.NORTH)
-    #     field.setSnakeFields(snake)
-    #     print(field.fields)
-    #     print()
-    #     i = i +1 
-
-    # snake.moveInDirection(Direction.WEST)
-    # field.setSnakeFields(snake)
-    # print(field.fields)
-    # print()
-
-    # i = 0
-    # while i < 3:
-    #     snake.moveInDirection(Direction.SOUTH)
-    #     field.setSnakeFields(snake)
-    #     print(field.fields)
-    #     print()
-    #     i = i +1 
-
-    # snake.moveInDirection(Direction.SOUTH, True)
-    # field.setSnakeFields(snake)
-    # print(field.fields)
-    # print()
-
-    # i = 0
-    # while i < 5:
-    #     snake.moveInDirection(Direction.EAST)
-    #     field.setSnakeFields(snake)
-    #     print(field.fields)
-    #     print()
-    #     i = i +1 
 
 
 if __name__ == "__main__":

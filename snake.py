@@ -1,4 +1,4 @@
-from globalConstants import HEAD, Direction
+from globalConstants import HEAD, Direction, FieldType
 
 class Snake:
 
@@ -61,7 +61,8 @@ class Snake:
     # this is done using two tmp variables for x and y coordinates each
     # one tmp is used to store current value of the piece and afterwards current value changes to previously created tmp
     # tmp0 and tmp1 to hold correct order (alternating dependent on remainder of division by 2)
-    def moveInDirection(self, direction, eating=False):
+    def moveInDirection(self, direction, field):
+        eating = False
         self.__direction = direction
         tmpX_0 = self.__snakeCoordX[HEAD]
         tmpY_0 = self.__snakeCoordY[HEAD]
@@ -74,6 +75,16 @@ class Snake:
             self.__snakeCoordY[HEAD] -= 1
         elif direction == Direction.SOUTH:
             self.__snakeCoordY[HEAD] += 1
+
+        # field only holds current part of snake after calling field.drawSnake()
+        if field.getFields(self.__snakeCoordX[HEAD], self.__snakeCoordY[HEAD]) == FieldType.FOOD:
+            eating = True
+        elif field.getFields(self.__snakeCoordX[HEAD], self.__snakeCoordY[HEAD]) == FieldType.SNAKE:
+            print("snake bit her ass")
+            exit()
+        elif field.getFields(self.__snakeCoordX[HEAD], self.__snakeCoordY[HEAD]) == FieldType.BORDER:
+            print("that was the border")
+            exit()
 
         for i in range(1, len(self.__snakeCoordX)):
             if i % 2 == 1:
