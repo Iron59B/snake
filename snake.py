@@ -66,6 +66,8 @@ class Snake:
         tmpX_0 = self.__snakeCoordX[HEAD]
         tmpY_0 = self.__snakeCoordY[HEAD]
 
+        self.__direction = direction
+
         if direction == Direction.EAST:
             self.__snakeCoordX[HEAD] += 1
         elif direction == Direction.WEST:
@@ -77,13 +79,13 @@ class Snake:
 
         print(direction)
 
-        # field only holds current part of snake after calling field.drawSnake()
+        # field only holds current state of snake after calling field.setSnake()
         if field.getFields(self.__snakeCoordX[HEAD], self.__snakeCoordY[HEAD]) == FieldType.FOOD:
             eating = True
         elif field.getFields(self.__snakeCoordX[HEAD], self.__snakeCoordY[HEAD]) == FieldType.SNAKE:
-            return 0
+            return False
         elif field.getFields(self.__snakeCoordX[HEAD], self.__snakeCoordY[HEAD]) == FieldType.BORDER:
-            return 0
+            return False
 
         for i in range(1, len(self.__snakeCoordX)):
             if i % 2 == 1:
@@ -108,7 +110,7 @@ class Snake:
                     self.__snakeCoordY.append(tmpY_0)
                     self.__length += 1
 
-        return 1
+        return True
             
 
     
