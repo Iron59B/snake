@@ -7,7 +7,7 @@ Using a Linux, use these commands to install:
 
 Check, if python3 is already installed:
 
-`code` $ python3 --version
+`$ python3 --version`
 
 If it can't find a version, call:
 
